@@ -28,14 +28,29 @@ int main(){
   address.sin_port = htons(PORT);
 
   if(bind(server_fd,(struct sockaddr*)&address, sizeof(address)) <0){
-  perror("bind failed");
-  exit("EXIT_FAILURE");
+    perror("bind failed");
+    exit(EXIT_FAILURE);
   }
-  if(listen(server_fd,3)0){
-  perror("listen failed");
-  exit("EXIT_FAILURE");
+  if(listen(server_fd,3)<0){
+    perror("listen failed");
+    exit(EXIT_FAILURE);
   }
   printf("Server listen on port %d\n",PORT);
+
+  if((new_socket=accept(server_fd,(struct sockaddr*)&address,(socklen_t*)&addrlen))<0){
+    perror("accept");
+    exit(EXIT_FAILURE);
+  }
+  printf("connection accept\n");
+
+  //read data from client
+  ssize_t valread;
+  while((valread=read(new_socket,buffer,BUFFER_SIZE))>0){
+  printf("Client: %s",buffer);
+  memset(buffer,0,sizeof(buffer));
+  }
+  close(server_fd);
+  return 0;
 
 
 }
